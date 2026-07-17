@@ -261,7 +261,9 @@ function withSecurityHeaders(response, pathname) {
   if (/\.(css|js|webp|svg|png|jpg|jpeg|avif|woff2)$/i.test(pathname)) {
     headers.set("Cache-Control", "public, max-age=31536000, immutable");
   } else if (/\.(html)?$/i.test(pathname) || pathname === "/" || pathname.endsWith(".xml") || pathname.endsWith(".txt")) {
-    headers.set("Cache-Control", "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800");
+    // 30-min edge cap so deploys propagate without manual purges;
+    // css/js stay immutable because their URLs carry a ?v= version.
+    headers.set("Cache-Control", "public, max-age=300, s-maxage=1800, stale-while-revalidate=86400");
   }
   return new Response(response.body, {
     status: response.status,
