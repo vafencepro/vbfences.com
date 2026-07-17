@@ -189,3 +189,11 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgba(255,196,44,.
   .overlay-card .brand-slogan { font-size: 1.1rem; }
   .footer-tag { display: block; margin-left: 0; margin-top: 0.25rem; }
 }
+
+/* Scheduler overlay modal (desktop) — mobile navigates to Acuity full page */
+.sched-modal{position:fixed;inset:0;z-index:1000;background:rgba(10,15,20,.72);display:flex;align-items:center;justify-content:center;padding:24px;}
+.sched-modal-box{position:relative;width:min(940px,100%);height:min(760px,90vh);background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4);}
+.sched-modal-box iframe{width:100%;height:100%;border:0;display:block;}
+.sched-modal-close{position:absolute;top:8px;right:8px;z-index:1;width:36px;height:36px;border:0;border-radius:50%;background:rgba(10,15,20,.85);color:#fff;font-size:22px;line-height:1;cursor:pointer;}
+.sched-modal-close:hover,.sched-modal-close:focus{background:#000;}
+.form-confirm{padding:8px 0;}

@@ -151,3 +151,63 @@
     }
   }, { passive: true });
 })();
+
+/* ============================================================
+   VB Fences — scheduler overlay
+   Desktop: any link to vbfences.as.me opens the scheduler in an
+   on-brand modal (no navigation). Mobile: normal full-page flow.
+   Fails open: any error falls back to plain navigation.
+   ============================================================ */
+(function () {
+  var MODAL_MIN_WIDTH = 720;
+
+  function embedUrl(href) {
+    try {
+      var u = new URL(href, location.href);
+      if (u.hostname !== 'vbfences.as.me') return null;
+      if (u.pathname.indexOf('schedule.php') === -1) u.pathname = '/schedule.php';
+      return u.toString();
+    } catch (e) { return null; }
+  }
+
+  function openModal(src, trigger) {
+    var wrap = document.createElement('div');
+    wrap.className = 'sched-modal';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', 'Schedule your free estimate');
+    wrap.innerHTML =
+      '<div class="sched-modal-box">' +
+        '<button type="button" class="sched-modal-close" aria-label="Close scheduler">&times;</button>' +
+        '<iframe src="' + src + '" title="VB Fences online scheduler"></iframe>' +
+      '</div>';
+    function onKey(ev) { if (ev.key === 'Escape') close(); }
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      if (wrap.parentNode) wrap.parentNode.removeChild(wrap);
+      document.body.style.overflow = '';
+      try { if (trigger && trigger.focus) trigger.focus(); } catch (e) {}
+    }
+    wrap.addEventListener('click', function (ev) {
+      if (ev.target === wrap || (ev.target.classList && ev.target.classList.contains('sched-modal-close'))) close();
+    });
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(wrap);
+    document.body.style.overflow = 'hidden';
+    var btn = wrap.querySelector('.sched-modal-close');
+    if (btn) btn.focus();
+  }
+
+  document.addEventListener('click', function (ev) {
+    if (ev.defaultPrevented) return;
+    var a = ev.target.closest ? ev.target.closest('a[href]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    if (href.indexOf('vbfences.as.me') === -1) return;
+    if (window.innerWidth < MODAL_MIN_WIDTH) return;
+    var src = embedUrl(a.href);
+    if (!src) return;
+    ev.preventDefault();
+    try { openModal(src, a); } catch (e) { window.location.href = a.href; }
+  });
+})();
