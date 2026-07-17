@@ -22,6 +22,8 @@ wrangler.jsonc    — deploy config (KV binding, route, assets dir)
 npx wrangler deploy
 ```
 
+When changing css/js, bump the ?v= version string in the HTML refs — those files cache immutable for a year. HTML needs no cache handling (ETag revalidation).
+
 Secrets persist on the Worker across deploys. Currently set: `RESEND_API_KEY`,
 `GOOGLE_API_KEY`. Vars: `SITE_URL`.
 

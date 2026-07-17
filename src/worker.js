@@ -259,12 +259,11 @@ function withSecurityHeaders(response, pathname) {
   headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   headers.set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' https://embed.acuityscheduling.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.acuityscheduling.com; font-src 'self'; frame-src https://vbfences.as.me https://*.acuityscheduling.com https://challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
   if (/\.(css|js|webp|svg|png|jpg|jpeg|avif|woff2)$/i.test(pathname)) {
+    // Safe to cache forever: css/js URLs carry a ?v= version (bump on change).
     headers.set("Cache-Control", "public, max-age=31536000, immutable");
-  } else if (/\.(html)?$/i.test(pathname) || pathname === "/" || pathname.endsWith(".xml") || pathname.endsWith(".txt")) {
-    // 30-min edge cap so deploys propagate without manual purges;
-    // css/js stay immutable because their URLs carry a ?v= version.
-    headers.set("Cache-Control", "public, max-age=300, s-maxage=1800, stale-while-revalidate=86400");
   }
+  // HTML/xml/txt: leave the asset layer's `max-age=0, must-revalidate` —
+  // ETag revalidation keeps pages always-fresh with no manual purges.
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
