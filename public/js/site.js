@@ -11,10 +11,9 @@
      2. Replace the form with an inline confirmation (no redirect)
    ============================================================ */
 (function () {
-  // Turnstile: paste the real sitekey after creating the widget
-  // (dash.cloudflare.com → Turnstile → Add widget → vbfences.com, managed).
-  // While this placeholder remains, no widget renders and nothing changes.
-  var TURNSTILE_SITEKEY = 'REPLACE_WITH_TURNSTILE_SITEKEY';
+  // Turnstile ACTIVE — widget 'vbfences-quote-form' (managed), created 2026-07-17.
+  // Worker verifies via TURNSTILE_SECRET; failed checks are stored + emailed [SUSPECT].
+  var TURNSTILE_SITEKEY = '0x4AAAAAAD3v4bjZRLVbTmKp';
   var tsWidgetId = null;
 
   function findQuoteForm() {
