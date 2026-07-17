@@ -9,7 +9,12 @@
   "compatibility_date": "2026-07-01",
   "assets": {
     "directory": "./public",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
+    // Without this, asset-matching paths (all 16 pages, every .html URL)
+    // are served before the Worker runs — the 301 REDIRECTS map and
+    // withSecurityHeaders never execute for them (root cause of the
+    // sitewide 307s surviving deploys).
+    "run_worker_first": true
   },
   "kv_namespaces": [
     { "binding": "LEADS", "id": "a4b4ae262a484e3a978e317cb4876727" }

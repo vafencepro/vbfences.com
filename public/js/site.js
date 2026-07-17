@@ -179,7 +179,7 @@
     wrap.innerHTML =
       '<div class="sched-modal-box">' +
         '<button type="button" class="sched-modal-close" aria-label="Close scheduler">&times;</button>' +
-        '<iframe src="' + src + '" title="VB Fences online scheduler"></iframe>' +
+        '<iframe src="' + src + '" title="VB Fences online scheduler" allow="payment"></iframe>' +
       '</div>';
     function onKey(ev) { if (ev.key === 'Escape') close(); }
     function close() {
