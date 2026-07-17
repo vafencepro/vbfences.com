@@ -1,0 +1,25 @@
+{
+  // vbfences.com — unified Worker + static assets
+  // Deploy: npx wrangler deploy   (from this directory, with an authed wrangler)
+  // Secrets live on the Worker, NOT in this file:
+  //   npx wrangler secret put RESEND_API_KEY     (already set on the deployed worker)
+  //   npx wrangler secret put TURNSTILE_SECRET   (set when activating Turnstile)
+  "name": "vbfences",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    { "binding": "LEADS", "id": "a4b4ae262a484e3a978e317cb4876727" }
+  ],
+  "routes": [
+    { "pattern": "vbfences.com/*", "zone_name": "vbfences.com" }
+  ],
+  "vars": {
+    "SITE_URL": "https://vbfences.com"
+  },
+  "workers_dev": false,
+  "observability": { "enabled": true }
+}
