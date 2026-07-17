@@ -3,17 +3,14 @@
    ============================================================ */
 
 /* ============================================================
-   VB Fences — quote form → /api/lead capture → Acuity redirect
+   VB Fences — callback form → /api/lead capture → inline confirm
+   Booking is the direct path (Acuity buttons/embed on every page);
+   this form is the callback path for people not ready to book.
    On submit:
      1. Beacon full form data to /api/lead (Worker emails sales@ + KV backup)
-     2. Pass name/email/phone to Acuity for pre-fill
-     3. Redirect to scheduler
-   The /api/lead beacon ensures we capture the lead even if the
-   customer abandons the Acuity step.
+     2. Replace the form with an inline confirmation (no redirect)
    ============================================================ */
 (function () {
-  var SCHEDULER = 'https://vbfences.as.me/?appointmentType=category:Project%20Quotes';
-
   // Turnstile: paste the real sitekey after creating the widget
   // (dash.cloudflare.com → Turnstile → Add widget → vbfences.com, managed).
   // While this placeholder remains, no widget renders and nothing changes.
@@ -94,34 +91,19 @@
         }
       } catch (e) {}
 
-      // ---- 2. Build Acuity prefill params ----
-      var params = new URLSearchParams();
-      if (fd) {
-        var name = String(fd.get('name') || '').trim();
-        if (name) {
-          var first = name.split(' ')[0];
-          var last  = name.split(' ').slice(1).join(' ');
-          if (first) params.set('firstName', first);
-          if (last)  params.set('lastName',  last);
-        }
-        var email = String(fd.get('email') || '').trim();
-        if (email) params.set('email', email);
-        var phone = String(fd.get('phone') || '').trim();
-        if (phone) params.set('phone', phone);
-
-        var notes = [];
-        var svc = String(fd.get('service') || '').trim();
-        if (svc) notes.push('Service: ' + svc);
-        var addr = String(fd.get('address') || '').trim();
-        if (addr) notes.push('Address: ' + addr);
-        var msg = String(fd.get('details') || fd.get('message') || '').trim();
-        if (msg) notes.push('Notes: ' + msg);
-        if (notes.length) params.set('field:notes', notes.join(' | '));
+      // ---- 2. Confirm inline — the form is the callback path ----
+      try {
+        var note = document.createElement('div');
+        note.className = 'form-confirm';
+        note.setAttribute('role', 'status');
+        note.innerHTML = '<h3>Got it — we\'ll call you back within one business day.</h3>' +
+          '<p class="form-note">Want a time on the calendar now? ' +
+          '<a href="https://vbfences.as.me/?appointmentType=category:Project%20Quotes">Pick a time online</a> ' +
+          'or call <a href="tel:+17577037030"><strong>(757) 703-7030</strong></a>.</p>';
+        form.parentNode.replaceChild(note, form);
+      } catch (e) {
+        try { form.reset(); } catch (e2) {}
       }
-
-      // ---- 3. Redirect to scheduler ----
-      var qs = params.toString();
-      window.location.href = SCHEDULER + (qs ? '&' + qs : '');
     });
   });
 })();
