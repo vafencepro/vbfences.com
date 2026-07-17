@@ -197,3 +197,13 @@ input:focus, select:focus, textarea:focus { outline: 2px solid rgba(255,196,44,.
 .sched-modal-close{position:absolute;top:8px;right:8px;z-index:1;width:36px;height:36px;border:0;border-radius:50%;background:rgba(10,15,20,.85);color:#fff;font-size:22px;line-height:1;cursor:pointer;}
 .sched-modal-close:hover,.sched-modal-close:focus{background:#000;}
 .form-confirm{padding:8px 0;}
+
+/* Native select rendering — force light widget + visible options regardless
+   of OS dark theme (Linux/Firefox dark-GTK renders options invisibly otherwise) */
+select { color-scheme: light; cursor: pointer; }
+select option { background: #fff; color: var(--text); }
+select option:checked { background: var(--highlight); color: #111; }
+/* Placeholder state: soft until a real choice is made */
+select:has(option[value=""]:checked) { color: var(--text-soft); }
+/* Stronger click/focus feedback on all fields */
+input:focus, select:focus, textarea:focus { outline: 3px solid var(--highlight); outline-offset: 1px; border-color: var(--highlight-dark); }
